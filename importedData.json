@@ -1,0 +1,11 @@
+[
+  {
+    "fileurl": "https://espaceabonnes.vinci-autoroutes.com/FacturesConso/Factures/Download?numeroClient=XXXXXX&idDocument=XXXXXX-XXXXX",
+    "idFacture": "XXXXXX",
+    "amount": 21.8,
+    "date": "2016-05-19T22:00:00.000Z",
+    "vendor": "Vinci autoroute",
+    "currency": "€",
+    "filename": "2016-04-21,8€.pdf"
+  }
+]

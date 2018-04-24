@@ -1,4 +1,4 @@
-[Cozy][cozy] <YOUR SUPER NEW KONNECTOR NAME>
+[Cozy][cozy] Vinci autoroute connector
 =======================================
 
 What's Cozy?
@@ -11,7 +11,11 @@ What's Cozy?
 What's this new konnector?
 --------------------------
 
-<YOUR DESCRIPTION HERE>
+This connector fetches the list of bills from Vinci autoroute for each month.
+
+The files have the following form : `2016-05-15€.pdf`
+
+An example of imported data can be seen in [./importedData.json](./importedData.json)
 
 ### Open a Pull-Request
 
@@ -19,11 +23,11 @@ If you want to work on this konnector and submit code modifications, feel free t
 
 ### Cozy-konnector-libs
 
-This connector uses [cozy-konnector-libs](https://github.com/cozy/cozy-konnector-libs). You can find more documentation about it there.
+This connector uses [cozy-konnector-libs](https://github.com/konnectors/libs). You can find more documentation about it there.
 
 ### Maintainer
 
-The lead maintainers for this konnector is <YOUR NAME>
+The lead maintainers for this konnector is @doubleface
 
 
 ### Get in touch
@@ -35,11 +39,10 @@ You can reach the Cozy Community by:
 - Posting issues on the [Github repos][github]
 - Say Hi! on [Twitter]
 
-
 License
 -------
 
-<YOUR KONNECTOR NAME> is developed by <your name> and distributed under the [AGPL v3 license][agpl-3.0].
+Vinci autoroute connector is developed by [cozy] and distributed under the [AGPL v3 license][agpl-3.0].
 
 [cozy]: https://cozy.io "Cozy Cloud"
 [agpl-3.0]: https://www.gnu.org/licenses/agpl-3.0.html
