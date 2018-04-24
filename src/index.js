@@ -14,6 +14,7 @@ const {
 } = require('cozy-konnector-libs')
 const moment = require('moment')
 moment.locale('fr')
+const stream = require('stream')
 const request = requestFactory({ cheerio: true, jar: true })
 
 const baseUrl = 'https://espaceabonnes.vinci-autoroutes.com'
@@ -24,13 +25,15 @@ async function start(fields) {
   log('info', 'Authenticating ...')
   await authenticate(fields.login, fields.password)
   log('info', 'Successfully logged in')
+
   log('info', 'Fetching the list of bills')
-  const $ = await request(`${baseUrl}/FacturesConso/Factures`)
+  let $ = await request(`${baseUrl}/FacturesConso/Factures`)
   log('info', 'Parsing bills')
   const bills = parseBills($)
   log('info', 'Saving data to Cozy')
   await saveBills(bills, fields.folderPath, {
-    identifier: 'vinci'
+    identifier: 'vinci',
+    contentType: 'application/pdf'
   })
 }
 
@@ -75,12 +78,17 @@ function parseBills($) {
   )
 
   return bills.map(bill => {
-    const { originalDate } = bill
+    const { originalDate, fileurl } = bill
     delete bill.originalDate
+    delete bill.fileurl
+    const pdfStream = new stream.PassThrough()
+    const request = requestFactory({ cheerio: false, json: false })
+    const filestream = request(fileurl).pipe(pdfStream)
     return {
       ...bill,
-      vendor: 'Vinci autoroute',
+      vendor: 'vinciautoroute',
       currency: '€',
+      filestream,
       filename: `${originalDate.format('YYYY-MM')}-${String(
         bill.amount
       ).replace('.', ',')}€.pdf`
