@@ -10,7 +10,9 @@ const {
   signin,
   scrape,
   saveBills,
-  log
+  log,
+  hydrateAndFilter,
+  addData
 } = require('cozy-konnector-libs')
 const moment = require('moment')
 moment.locale('fr')
@@ -35,6 +37,12 @@ async function start(fields) {
     identifier: 'vinci',
     contentType: 'application/pdf'
   })
+
+  log('info', 'Fetching the list of consumptions')
+  $ = await request(`${baseUrl}/FacturesConso/Consommations`)
+  log('info', 'Parsing consumptions')
+  const consumptions = parseConsumptions.bind(this)($)
+  await saveConsumptions(consumptions)
 }
 
 async function authenticate(login, password) {
@@ -94,4 +102,55 @@ function parseBills($) {
       ).replace('.', ',')}€.pdf`
     }
   })
+}
+
+function parseConsumptions($) {
+  const consumptions = scrape(
+    $,
+    {
+      badgeNumber: {
+        sel: 'td:nth-child(1)'
+      },
+      date: {
+        sel: 'td:nth-child(3)',
+        parse: date => moment(date, 'DD/MM/YYYY').toDate()
+      },
+      inPlace: {
+        sel: 'td:nth-child(5)'
+      },
+      outPlace: {
+        sel: 'td:nth-child(7)'
+      },
+      distance: {
+        sel: 'td:nth-child(11)',
+        parse: distance => Number(distance)
+      },
+      amount: {
+        sel: 'td:nth-child(13)',
+        parse: amount => parseFloat(amount.replace(' €', '').replace(',', '.'))
+      }
+    },
+    '.table tbody tr'
+  )
+
+  return consumptions.map(consumption => {
+    return {
+      ...consumption,
+      currency: '€',
+      distanceUnit: 'km',
+      metadata: {
+        accountId: this.accountId,
+        dateImport: new Date(),
+        vendor: 'vinciautoroute',
+        version: 1
+      }
+    }
+  })
+}
+
+function saveConsumptions(consumptions) {
+  const DOCTYPE = 'io.cozy.vinci.consumptions'
+  return hydrateAndFilter(consumptions, DOCTYPE, {
+    keys: ['badgeNumber', 'date', 'inPlace', 'outPlace']
+  }).then(entries => addData(entries, DOCTYPE))
 }
