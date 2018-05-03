@@ -34,7 +34,10 @@ async function start(fields) {
   const bills = parseBills($)
   log('info', 'Saving data to Cozy')
   await saveBills(bills, fields.folderPath, {
-    identifier: 'vinci',
+    identifiers: [
+      'vinci',
+      'escota' // old company name
+    ],
     contentType: 'application/pdf'
   })
 
