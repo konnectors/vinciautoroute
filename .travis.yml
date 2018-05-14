@@ -1,40 +1,32 @@
 language: node_js
 node_js:
-  - '8'
+- '8'
 env:
   global:
-    # cozy-bot GITHUB_TOKEN
-    # to generate yours : travis encrypt GITHUB_TOKEN=<your_GITHUB_TOKEN>
-    - secure: EK2Xhhd4XyqA3ij5SWgegosHqiHCgAjYW/GnR55qX8r5rQqYheEKz+1+Ys04GoihTHJNpHHaQaXooWDws+VYr2aoQvjq1S4XqZT8f4dsMUiNblIAtySUPSoWumjeLu8mFKe8Gub5bpH60VkJVzjFfEZ5g0vlQLNVhrn/I/AHRepCkEn9GCC72/97EA51e/D9pAwJupsZHfdnxG1ZwBPViOtYIEjUdc+ElDeYdjuJ7h51BV2H3KNqIlG/QCnUnpulYQQ0N+2wdNPoDLnbFRufXeDxP+U98cp/ak27iXmO/KOdBvMuJUCY4ANHmwcWurIT9Q7jjrCZkTMLgzIAe0tirBBJp/TLZ5M4r3ELorysFBmbSJZyeZbWV/Nt1Yn82PFLKZvr5wStWr4++VGvekQKvMn70oHkxeiYQOwGmDzez7ajqxcfjn5HgH/ClfvwFiwb4QdEihmlH/g6EenYKAQyj115HtvEqGQTVHlfTC5X8y1ZAX6dpuZuZa4Ydib1Fz8QBkusBvX7BSdWWeIX+RWaOlhiAxK4QdwH297tbJH5QxLxVgustfpYTNyf2vmlfgJekWAFSxXbBwsOfPEdog+wL6upnEmdznZicexqaYF6v0EQvaWPndikG5t4ktpB6pAasxuxHiYmk9h2JldXNrEwv5ywM1hW705yEOG28X7zxjA=
-    # Cozy REGISTRY_TOKEN
-    - secure: mrpQI+nbyQgpij6b7iXZ2VAc+6bkNXich4b5/nBjUPvdPDZPFIk9DfyPsLs/KmE9Ci5Jh0hYZpoVRjGGNR6kHrZOGvxiqeuSy3PZOAk5mFXzHXmC8dxXQRbEceamR/VvFSE/RDzye8uojE6qS2WgHW8Bs9PWI9JP/sU87LcReFfdZddjs3oGVdeQeyug0vmk7h/TSJLxgY8lnYb0492qRpx16MphoDCR+tCImQMViikwatUTany9/oGx89X/NuE/8/w3386Kb+Q90as+fIeESAr34HoNSI8bYwttNtJSps7UAcTd6riCiGRB4cH5d0iR+0thBVnkoovhkh0PAZkLK9U1i7iLAcdx8ZVAEbQuoqh/lephuxMBgQOFLU8o/roezRnnCZq3zrjKcYFcrCe5f4E6UEMRnzhedWrYjZOzIqWFka4Ornu9JEJhIziU9/9ru7p6v3ettFmamd5EDsRLwW0Le5niMj+kDwhBOr2Wj9FomVYxfKPUu4iuwU6RKYu3AdY8d19dysGihb+06Xdvk99A7LTY2p8Vx9bglb+d0+0YQFBkAEOJdPlSFjUu6mMtgfJQ22XfRhSMYdjNBdT5NyIpFO6lEKp1QS3DBlAwO1CbuY5XH8B1iiLYwd29nLuS2Ba7V+ChJ1vzjCITmDC1zNaVxOYigOPwPDoxlMWxsSU=
-
+  - GH_USER_EMAIL="travis@example.org"
+  - GH_USER_NAME="cozy-bot"
+  - DEPLOY_REPOSITORY="git@github.com:konnectors/vinciautoroute.git"
 cache:
   yarn: true
   directories:
-    - node_modules
+  - node_modules
 script:
-  - yarn lint
-  - yarn build
+- yarn lint
+- yarn build
 deploy:
-  # publish dev versions
-  - provider: script
-    repo: konnectors/vinciautoroute
-    skip-cleanup: true
-    script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
-    on:
-      branch: master
-  # publish on latest branch (will be removed when collect will use only the registry
-  - provider: script
-    repo: konnectors/vinciautoroute
-    skip-cleanup: true
-    script: DEPLOY_BRANCH=latest yarn deploy
-    on:
-      branch: prod
-  # publish stable versions and beta versions based on tags
-  - provider: script
-    repo: konnectors/vinciautoroute
-    skip-cleanup: true
-    script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
-    on:
-      tags: true
+- provider: script
+  skip-cleanup: true
+  script: DEPLOY_BRANCH=build yarn deploy
+  on:
+    branch: master
+- provider: script
+  skip-cleanup: true
+  script: DEPLOY_BRANCH=latest yarn deploy
+  on:
+    branch: prod
+before_install:
+- openssl aes-256-cbc -K $encrypted_9c13cf8cdf3a_key -iv $encrypted_9c13cf8cdf3a_iv
+  -in github_deploy_key.enc -out /tmp/github_deploy_key -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/github_deploy_key
+- ssh-add /tmp/github_deploy_key
