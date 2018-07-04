@@ -88,4 +88,5 @@
       }
     }
   }
+  "banksTransactionRegExp": "\\b(vinci|escota)\\b"
 }
