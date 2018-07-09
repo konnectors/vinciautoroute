@@ -7,7 +7,7 @@
   "slug": "vinciautoroute",
   "source": "git://github.com/konnectors/vinciautoroute.git",
   "editor": "Cozy",
-  "vendor_link": "https://espaceabonnes.vinci-autoroutes.com/Authentification",
+  "vendor_link": "https://oidc-tlp.vinci-autoroutes.com",
   "categories": ["transport"],
   "fields": {
     "login": {
@@ -87,6 +87,7 @@
         }
       }
     }
-  }
-  "banksTransactionRegExp": "\\b(vinci|escota)\\b"
+  },
+  "banksTransactionRegExp": "\\b(vinci|escota)\\b",
+  "manifest_version": "2"
 }
