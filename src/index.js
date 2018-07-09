@@ -16,8 +16,11 @@ const {
 } = require('cozy-konnector-libs')
 const moment = require('moment')
 moment.locale('fr')
-const stream = require('stream')
-const request = requestFactory({ cheerio: true, jar: true })
+const request = requestFactory({
+  // debug: true,
+  cheerio: true,
+  jar: true
+})
 
 const baseUrl = 'https://espaceabonnes.vinci-autoroutes.com'
 
@@ -30,6 +33,7 @@ async function start(fields) {
 
   log('info', 'Fetching the list of bills')
   let $ = await request(`${baseUrl}/FacturesConso/Factures`)
+
   log('info', 'Parsing bills')
   const bills = parseBills($)
   log('info', 'Saving data to Cozy')
@@ -48,15 +52,27 @@ async function start(fields) {
   await saveConsumptions(consumptions)
 }
 
-async function authenticate(login, password) {
+async function authenticate(username, password) {
+  const url = (await request('https://oidc-tlp.vinci-autoroutes.com', {
+    resolveWithFullResponse: true
+  })).request.uri.href
   await signin({
-    url: `${baseUrl}/Authentification`,
-    formSelector: '#formAuthentication',
-    formData: {
-      'OpusInternetConnexionModel.NumeroClient': login,
-      'OpusInternetConnexionModel.Password': password
-    },
-    validate: (statusCode, $) => $('#erreurLabel').length === 0
+    url,
+    formSelector: 'form',
+    requestInstance: request,
+    formData: { username, password },
+    validate: (statusCode, $) => {
+      const errors = $('.validation-summary-errors ul')
+      if (errors.length > 0) {
+        log('error', errors.text().trim())
+      }
+      return errors.length === 0
+    }
+  })
+
+  await signin({
+    url: 'https://espaceabonnes.vinci-autoroutes.com/',
+    formSelector: 'form'
   })
 }
 
@@ -88,23 +104,14 @@ function parseBills($) {
     '.table tbody tr'
   )
 
-  return bills.map(bill => {
-    const { originalDate, fileurl } = bill
-    delete bill.originalDate
-    delete bill.fileurl
-    const pdfStream = new stream.PassThrough()
-    const request = requestFactory({ cheerio: false, json: false })
-    const filestream = request(fileurl).pipe(pdfStream)
-    return {
-      ...bill,
-      vendor: 'vinciautoroute',
-      currency: '€',
-      filestream,
-      filename: `${originalDate.format('YYYY-MM')}-${String(
-        bill.amount
-      ).replace('.', ',')}€.pdf`
-    }
-  })
+  return bills.map(bill => ({
+    ...bill,
+    vendor: 'vinciautoroute',
+    currency: '€',
+    filename: `${bill.originalDate.format('YYYY-MM')}-${String(
+      bill.amount
+    ).replace('.', ',')}€.pdf`
+  }))
 }
 
 function parseConsumptions($) {
