@@ -87,7 +87,7 @@
         }
       }
     }
-  }
+  },
   "banksTransactionRegExp": "\\b(vinci|escota)\\b",
   "manifest_version": "2"
 }
