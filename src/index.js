@@ -53,26 +53,20 @@ async function start(fields) {
 }
 
 async function authenticate(username, password) {
-  const url = (await request('https://oidc-tlp.vinci-autoroutes.com', {
+  const url = (await request('https://espaceabonnes.vinci-autoroutes.com/', {
     resolveWithFullResponse: true
   })).request.uri.href
   await signin({
     url,
     formSelector: 'form',
-    requestInstance: request,
     formData: { username, password },
     validate: (statusCode, $) => {
-      const errors = $('.validation-summary-errors ul')
-      if (errors.length > 0) {
-        log('error', errors.text().trim())
+      if ($.html().includes('saisi est incorrect')) {
+        return false
+      } else {
+        return true
       }
-      return errors.length === 0
     }
-  })
-
-  await signin({
-    url: 'https://espaceabonnes.vinci-autoroutes.com/',
-    formSelector: 'form'
   })
 }
 
