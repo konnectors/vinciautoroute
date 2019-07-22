@@ -42,7 +42,9 @@ async function start(fields) {
       'vinci',
       'escota' // old company name
     ],
-    contentType: 'application/pdf'
+    contentType: 'application/pdf',
+    sourceAccount: this._account._id,
+    sourceAccountIdentifier: fields.login
   })
 
   log('info', 'Fetching the list of consumptions')
