@@ -19,6 +19,13 @@ moment.locale('fr')
 const request = requestFactory({
   // debug: true,
   cheerio: true,
+  json: false,
+  jar: true
+})
+const requestJSON = requestFactory({
+  // debug: true,
+  cheerio: false,
+  json: true,
   jar: true
 })
 
@@ -58,10 +65,24 @@ async function authenticate(username, password) {
   const url = (await request('https://espaceabonnes.vinci-autoroutes.com/', {
     resolveWithFullResponse: true
   })).request.uri.href
+  await request.get(url)
+  const accountData = await requestJSON.post(
+    'https://oidc-bcu.vinci-autoroutes.com/account/loginStatus',
+    {
+      form: {
+        email: username,
+        clientId: 'BCU.EspaceAbonnes'
+      }
+    }
+  )
   await signin({
     url,
     formSelector: 'form',
-    formData: { username, password },
+    formData: {
+      username,
+      password,
+      accountType: accountData.Accounts[0].AccountTypeEnum
+    },
     validate: (statusCode, $) => {
       if ($.html().includes('saisi est incorrect')) {
         return false
