@@ -3,9 +3,12 @@ node_js:
 - '8'
 env:
   global:
+  - MATTERMOST_CHANNEL=teamconnecteurs
   - DEPLOY_REPOSITORY="git@github.com:konnectors/vinciautoroute.git"
-  # Token to access Cozy Registry, you should replace it with a token specific to this konnector
+  # REGISTRY_TOKEN(editor=cozy, app=vinciautoroute)
   - secure: NJapvvWNrYpuQ9rXPr5fY5ZxmIy93kCaivkEt6RVj/97hLghDVZ87wBtXsEB/FU8Oq4Xpbaxzp8KMzrNuWSe4MUO6BPEEYhDmWj1uLyc1gjOb4w3BZvv2L1M6ca1HATq0GmziZK7FEkqYQBVm6ibSrf+yM7nfE56NcBTFT3c40pjV0jcFzcLVP5tESTbSzD5kKA28xGuic37mCy0vJNhvCCpesfIzVM9Z0aMLJC+ZdFepwL6kWM/h9lCDP2yk6CY6YLytarMqXFdRFT+EkrUlLq0dkmHcIknJUQInOkdNBIGcsS5HbPZDIEjgr65m6XBw96Bh2JxnOQP1IVdMsC8mSpUm+SQxVcy6RQFY3htJ8SqFRu3md/0AHr+XoIepBOBSl7lhAKSPi3NS1jvx12cudoPn58Mbaz81W3tR3k5zXOLSd/Zf20upOHijyXjpRGk1seKq8ZbJuNz1SinIiMXLO1atnFhChTM3/w8x59iRrsmcItGhl0dNGtoiD13a47L7K5GNgZ9x5/y4EQVttx9zze+GaHYSabJZt9jtNBdnaHvVCet8GOZpvbDOlrhn7PZUptKw0fwaa4sMtsHQsCvg2C8WECrRN8LxsIco4ChVzgPmtKbakkjMffue0zGBshiJ2ME9mxZGjmu05T9B898sDHku8OlzBYa1HZpi5ZOe7o=
+  # MATTERMOST_HOOK_URL
+  - secure: DO4Kh/RskrgJkpdEuc5y3atyo22h/tXmfKtft5uXDTGHA3IsOlZmQiSWveenV8SiPuuWPbSqwn2vNrS6sj9n2PnvAelhiFnrSXXoVe+6lJtBgOeqqZRl4s+68/heb9S6QRuM0XRMVeiK1cuCuNu+JceoN2+xVxnorj9NW4NlgMQ0i8qaStVTHqItQT/6192g/oS/ByY4qshPztP3obQJNMJfe+WFzKsvvLQlEf3Gn/9zo6crFo9vcV8GyIqqwq05vVX1qteDuDiGDxbCSTBQ4bgFOZg0kJnQF1ctJjaoC/2cP90JbklZRhbnrUTY54H/AIM+iNavH8x34CBk0y9QvyiRETbmDO3XvL+Xc6EmubCBfwVMM30g/e9GTuZra221JkJcSI2upzMfwWRnkjQ1XS6vaKXjRanJvGDZ7ZQ5bWOaD2g31uGA/oAEQZiTzUlFxDIl190X9YuMhHtwIGaeV55g98b/mkFdX9mS9KZBneUmXBbMqqO8cm5mlVxozZCCts3jY3YWDteamNdpa1ZbyaY9AxZhc/6/AlYRTvpcQYvUBrQ4ARkReOlhpRmcdbNLObc20X514ivQ19U7dcOklo/R/uf+zWCOFnCarS7rxZzdt7GM9EcwaQFnb54YarIbsPvJ5iQr3+t2KdL/KNNM1t88zXV5Q/feCPmbXwRofcU=
 cache:
   yarn: true
   directories:
@@ -17,7 +20,7 @@ branches:
 script:
 - yarn lint
 - yarn build
-- yarn run check
+# - yarn run check
 deploy:
 - provider: script
   skip-cleanup: true
@@ -26,7 +29,7 @@ deploy:
     branch: master
 - provider: script
   skip-cleanup: true
-  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
+  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish --postpublish mattermost
   on:
     tags: true
 before_install:
