@@ -164,13 +164,7 @@ function parseConsumptions($) {
     return {
       ...consumption,
       currency: '€',
-      distanceUnit: 'km',
-      metadata: {
-        accountId: this.accountId,
-        dateImport: new Date(),
-        vendor: 'vinciautoroute',
-        version: 1
-      }
+      distanceUnit: 'km'
     }
   })
 }
