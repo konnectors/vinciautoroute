@@ -1,9 +1,8 @@
 language: node_js
 node_js:
-- '8'
+- '12'
 env:
   global:
-  - DEPLOY_REPOSITORY="git@github.com:konnectors/vinciautoroute.git"
   # REGISTRY_TOKEN(editor=cozy, app=vinciautoroute)
   - secure: NJapvvWNrYpuQ9rXPr5fY5ZxmIy93kCaivkEt6RVj/97hLghDVZ87wBtXsEB/FU8Oq4Xpbaxzp8KMzrNuWSe4MUO6BPEEYhDmWj1uLyc1gjOb4w3BZvv2L1M6ca1HATq0GmziZK7FEkqYQBVm6ibSrf+yM7nfE56NcBTFT3c40pjV0jcFzcLVP5tESTbSzD5kKA28xGuic37mCy0vJNhvCCpesfIzVM9Z0aMLJC+ZdFepwL6kWM/h9lCDP2yk6CY6YLytarMqXFdRFT+EkrUlLq0dkmHcIknJUQInOkdNBIGcsS5HbPZDIEjgr65m6XBw96Bh2JxnOQP1IVdMsC8mSpUm+SQxVcy6RQFY3htJ8SqFRu3md/0AHr+XoIepBOBSl7lhAKSPi3NS1jvx12cudoPn58Mbaz81W3tR3k5zXOLSd/Zf20upOHijyXjpRGk1seKq8ZbJuNz1SinIiMXLO1atnFhChTM3/w8x59iRrsmcItGhl0dNGtoiD13a47L7K5GNgZ9x5/y4EQVttx9zze+GaHYSabJZt9jtNBdnaHvVCet8GOZpvbDOlrhn7PZUptKw0fwaa4sMtsHQsCvg2C8WECrRN8LxsIco4ChVzgPmtKbakkjMffue0zGBshiJ2ME9mxZGjmu05T9B898sDHku8OlzBYa1HZpi5ZOe7o=
   # MATTERMOST_HOOK_URL
@@ -19,7 +18,6 @@ branches:
 script:
 - yarn lint
 - yarn build
-# - yarn run check
 deploy:
 - provider: script
   skip-cleanup: true
