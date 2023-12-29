@@ -1,9 +1,3 @@
-// Force sentry DSN into environment variables
-// In the future, will be set by the stack
-process.env.SENTRY_DSN =
-  process.env.SENTRY_DSN ||
-  'https://5a753d9b93f04cb2a9a222624262d1c4:099dbb0b4f244d09b5895d4fec17c434@sentry.cozycloud.cc/39'
-
 const {
   BaseKonnector,
   requestFactory,
@@ -17,13 +11,13 @@ const {
 const moment = require('moment')
 moment.locale('fr')
 const request = requestFactory({
-  // debug: true,
+//  debug: true,
   cheerio: true,
   json: false,
   jar: true
 })
 const requestJSON = requestFactory({
-  // debug: true,
+ //   debug: true,
   cheerio: false,
   json: true,
   jar: true
